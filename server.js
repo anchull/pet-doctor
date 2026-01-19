@@ -87,16 +87,17 @@ const setPets = (req, newPets) => {
 const getRecords = (req) => getUserData(req).records;
 const getRecordsByPet = (req, petId) => {
     const records = getRecords(req);
+    const pets = getPets(req);
+    const firstPetId = pets.length > 0 ? pets[0].id : null;
+
     if (!petId) return records;
 
-    // Check if any records have petId assigned
-    const hasAnyPetId = records.some(r => r.petId);
-
-    // If no records have petId (old data), show all records
-    if (!hasAnyPetId) return records;
-
-    // Otherwise filter by selected pet
-    return records.filter(r => r.petId === petId);
+    // Filter records: show records that match petId OR (have no petId AND this is the first pet)
+    return records.filter(r => {
+        if (r.petId === petId) return true;
+        if (!r.petId && petId === firstPetId) return true; // Old records go to first pet
+        return false;
+    });
 };
 const addRecord = (req, record) => {
     const data = getUserData(req);
