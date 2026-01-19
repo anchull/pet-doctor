@@ -84,7 +84,7 @@
 
             const ctx = canvas.getContext('2d');
 
-            const rawRecords = <% - JSON.stringify(records) %>;
+            const rawRecords = <%- JSON.stringify(records) %>;
             const sortedRecords = rawRecords.slice().reverse();
 
             const labels = sortedRecords.map(r => r.date);
