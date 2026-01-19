@@ -2,48 +2,75 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
-
 const fs = require('fs');
+const cookieParser = require('cookie-parser');
 
 // Middleware
 app.use(expressLayouts);
+app.use(cookieParser()); // Enable cookies
 app.set('layout', 'layout');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
-// Data Persistence
-const DATA_FILE = path.join(__dirname, 'data', 'pets.json');
-let pets = [];
+// Data Persistence (Multi-User)
+const DATA_FILE = path.join(__dirname, 'data', 'db.json');
+let db = {}; // Structure: { "USER_ID": [pets...] }
 
 // Load data on start
 try {
     if (fs.existsSync(DATA_FILE)) {
         const data = fs.readFileSync(DATA_FILE, 'utf8');
-        pets = JSON.parse(data);
-        console.log(`Loaded ${pets.length} pets from file.`);
+        db = JSON.parse(data);
+        console.log(`Loaded database with ${Object.keys(db).length} users.`);
     }
 } catch (err) {
     console.error("Error loading data:", err);
+    db = {};
 }
 
-function savePets() {
+function saveDb() {
     try {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(pets, null, 2));
+        fs.writeFileSync(DATA_FILE, JSON.stringify(db, null, 2));
     } catch (err) {
         console.error("Error saving data:", err);
     }
 }
 
-// Helper for active tab
+// User ID Middleware & Locals
 app.use((req, res, next) => {
+    let userId = req.cookies.userId;
+
+    // If no user/cookie, create one
+    if (!userId) {
+        userId = 'U' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        res.cookie('userId', userId, { maxAge: 90 * 24 * 60 * 60 * 1000, httpOnly: true }); // 90 days
+        console.log("New User Created:", userId);
+    }
+
+    // Ensure storage exists for this user
+    if (!db[userId]) {
+        db[userId] = [];
+        saveDb();
+    }
+
+    req.userId = userId;
     res.locals.path = req.path;
+    res.locals.userId = userId; // Make available to all views globally
     next();
 });
 
+// Helper functions (Scoped to User)
+const getPets = (req) => db[req.userId] || [];
+const setPets = (req, newPets) => {
+    db[req.userId] = newPets;
+    saveDb();
+};
+
 // Routes
 app.get('/', (req, res) => {
+    const pets = getPets(req);
     if (pets.length === 0) {
         return res.redirect('/onboarding');
     }
@@ -69,103 +96,12 @@ app.get('/scan/camera', (req, res) => {
     res.render('scan/camera');
 });
 
-app.get('/history', (req, res) => {
-    res.render('records');
-});
-
-app.get('/vet', (req, res) => {
-    res.render('vet');
-});
-
-app.get('/my', (req, res) => {
-    res.render('my/index', { pets, userId: req.userId });
-});
-
-app.get('/my/pets', (req, res) => {
-    res.render('my/pets', { pets });
-});
-
-app.get('/new', (req, res) => {
-    res.render('add-pet');
-});
-
-app.post('/pets', (req, res) => {
-    const { name, breed, age, gender, weight } = req.body;
-
-    // Duplicate Name Check
-    const exists = pets.find(p => p.name === name);
-    if (exists) {
-        return res.status(422).render('add-pet', { error: '이미 등록된 이름입니다! 다른 이름을 사용해주세요.' });
-    }
-
-    const newPet = {
-        id: Date.now(),
-        name,
-        breed,
-        age: parseInt(age),
-        gender, // 'male' or 'female'
-        weight: parseFloat(weight),
-        image: null
-    };
-    pets.push(newPet);
-    savePets();
-    res.redirect('/');
-});
-
-app.post('/pets/:id/delete', (req, res) => {
-    const id = parseInt(req.params.id);
-    pets = pets.filter(p => p.id !== id);
-    savePets();
-    res.redirect('/my/pets');
-});
-
-// Edit Routes
-app.get('/pets/:id/edit', (req, res) => {
-    const id = parseInt(req.params.id);
-    const pet = pets.find(p => p.id === id);
-    if (!pet) return res.redirect('/my/pets');
-    res.render('edit-pet', { pet });
-});
-
-app.post('/pets/:id/edit', (req, res) => {
-    const id = parseInt(req.params.id);
-    const { name, breed, age, gender, weight } = req.body;
-
-    const petIndex = pets.findIndex(p => p.id === id);
-    if (petIndex !== -1) {
-        pets[petIndex] = {
-            ...pets[petIndex],
-            name,
-            breed,
-            age: parseInt(age),
-            gender,
-            weight: parseFloat(weight)
-        };
-        savePets();
-    }
-    res.redirect('/my/pets');
-});
-
-// My Page Routes
-app.get('/my/settings', (req, res) => {
-    res.render('my/settings');
-});
-
-app.get('/my/terms', (req, res) => {
-    res.render('my/terms');
-});
-
-app.get('/my/privacy', (req, res) => {
-    res.render('my/privacy');
-});
-
+// Mock Analysis Route
 app.get('/scan/result', (req, res) => {
-    // Redirect if direct access if needed, or render mock
     res.redirect('/');
 });
 
 app.post('/scan/analyze', async (req, res) => {
-    // Simulate processing delay
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     // Mock Analysis Logic
@@ -184,14 +120,12 @@ app.post('/scan/analyze', async (req, res) => {
 
     let totalPenalty = 0;
     const results = parameters.map(param => {
-        // 80% chance of being Normal (index 0)
         const isNormal = Math.random() > 0.2;
         let valueIndex = 0;
 
         if (!isNormal) {
-            // Pick a random abnormal value
             valueIndex = Math.floor(Math.random() * (param.vals.length - 1)) + 1;
-            totalPenalty += (valueIndex * 10); // Simple penalty logic
+            totalPenalty += (valueIndex * 10);
         }
 
         return {
@@ -202,14 +136,115 @@ app.post('/scan/analyze', async (req, res) => {
         };
     });
 
-    // Calculate score (100 - penalties, min 40)
     const score = Math.max(40, 100 - totalPenalty);
-
-    // Save result (Optional: In a real app, save to history array)
-    // For now, just render
     res.render('scan/result', { score, results });
 });
 
+app.get('/history', (req, res) => {
+    res.render('records');
+});
+
+app.get('/vet', (req, res) => {
+    res.render('vet');
+});
+
+app.get('/my', (req, res) => {
+    const pets = getPets(req);
+    res.render('my/index', { pets }); // userId is already in res.locals
+});
+
+app.get('/my/pets', (req, res) => {
+    const pets = getPets(req);
+    res.render('my/pets', { pets });
+});
+
+app.get('/new', (req, res) => {
+    res.render('add-pet');
+});
+
+app.post('/pets', (req, res) => {
+    const { name, breed, age, gender, weight } = req.body;
+    let pets = getPets(req);
+
+    // Duplicate Name Check
+    const exists = pets.find(p => p.name === name);
+    if (exists) {
+        return res.status(422).render('add-pet', { error: '이미 등록된 이름입니다! 다른 이름을 사용해주세요.' });
+    }
+
+    const newPet = {
+        id: Date.now(),
+        name,
+        breed,
+        age: parseInt(age),
+        gender, // 'male' or 'female'
+        weight: parseFloat(weight),
+        image: null
+    };
+
+    pets.push(newPet);
+    setPets(req, pets); // Save specific user data
+    res.redirect('/');
+});
+
+app.post('/pets/:id/delete', (req, res) => {
+    const id = parseInt(req.params.id);
+    let pets = getPets(req);
+    pets = pets.filter(p => p.id !== id);
+    setPets(req, pets);
+    res.redirect('/my/pets');
+});
+
+// Edit Routes
+app.get('/pets/:id/edit', (req, res) => {
+    const id = parseInt(req.params.id);
+    const pets = getPets(req);
+    const pet = pets.find(p => p.id === id);
+    if (!pet) return res.redirect('/my/pets');
+    res.render('edit-pet', { pet });
+});
+
+app.post('/pets/:id/edit', (req, res) => {
+    const id = parseInt(req.params.id);
+    const { name, breed, age, gender, weight } = req.body;
+    let pets = getPets(req);
+
+    const petIndex = pets.findIndex(p => p.id === id);
+    if (petIndex !== -1) {
+        pets[petIndex] = {
+            ...pets[petIndex],
+            name,
+            breed,
+            age: parseInt(age),
+            gender,
+            weight: parseFloat(weight)
+        };
+        setPets(req, pets);
+    }
+    res.redirect('/my/pets');
+});
+
+// Sync Route (Data Migration)
+app.post('/auth/sync', (req, res) => {
+    const { targetCode } = req.body;
+    if (targetCode && targetCode.length >= 6) {
+        // Simple Sync: Just switch identity to that code
+        res.cookie('userId', targetCode, { maxAge: 90 * 24 * 60 * 60 * 1000, httpOnly: true });
+        console.log(`User ${req.userId} switched to ${targetCode}`);
+    }
+    res.redirect('/my');
+});
+
+// My Page Routes
+app.get('/my/settings', (req, res) => {
+    res.render('my/settings');
+});
+app.get('/my/terms', (req, res) => {
+    res.render('my/terms');
+});
+app.get('/my/privacy', (req, res) => {
+    res.render('my/privacy');
+});
 app.get('/onboarding', (req, res) => {
     res.render('onboarding');
 });
