@@ -12,43 +12,19 @@
     <!-- Timeline -->
     <h3 class="text-lg font-bold mb-4">검사 이력</h3>
     <div class="space-y-4">
-        <!-- Mock Record Item 1 -->
-        <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
-            <div
-                class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-sm">
-                12.15
-            </div>
-            <div class="flex-1">
-                <h3 class="font-bold">정밀 소변 검사</h3>
-                <p class="text-xs text-gray-400">정상 • 10개 항목</p>
-            </div>
-            <div class="text-blue-400 font-bold text-lg">98점</div>
-        </div>
-
-        <!-- Mock Record Item 2 -->
-        <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
-            <div
-                class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 font-bold text-sm">
-                11.20
-            </div>
-            <div class="flex-1">
-                <h3 class="font-bold">병원 방문</h3>
-                <p class="text-xs text-gray-400">예방접종 (3차)</p>
-            </div>
-            <div class="text-gray-500 text-sm">완료</div>
-        </div>
-
-        <!-- Mock Record Item 3 -->
-        <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
-            <div
-                class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 font-bold text-sm">
-                10.05
-            </div>
-            <div class="flex-1">
-                <h3 class="font-bold">소변 검사</h3>
-                <p class="text-xs text-gray-400">주의 • 요비중 낮음</p>
-            </div>
-            <div class="text-red-400 font-bold text-lg">75점</div>
+        <!-- Empty State -->
+        <div class="glass p-8 rounded-3xl flex flex-col items-center justify-center text-center opacity-70">
+            <svg class="w-16 h-16 text-white/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                </path>
+            </svg>
+            <h3 class="font-bold text-lg mb-1">아직 검사 기록이 없어요</h3>
+            <p class="text-sm text-gray-400 mb-6">첫 소변 검사를 진행해서<br>우리 아이 건강 상태를 확인해보세요!</p>
+            <a href="/scan"
+                class="bg-primary hover:bg-primary-600 text-white font-bold py-3 px-6 rounded-xl transition-colors">
+                검사 시작하기
+            </a>
         </div>
     </div>
 </div>
@@ -65,10 +41,10 @@
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['10.05', '10.20', '11.05', '11.20', '12.01', '12.15'],
+            labels: [],
             datasets: [{
                 label: '건강 점수',
-                data: [75, 82, 88, 90, 95, 98],
+                data: [],
                 borderColor: '#0175C2',
                 backgroundColor: gradient,
                 borderWidth: 3,
