@@ -177,6 +177,19 @@ app.get('/history', (req, res) => {
     res.render('records', { records });
 });
 
+// Detail View Route
+app.get('/history/:id', (req, res) => {
+    const records = getRecords(req);
+    const id = parseInt(req.params.id);
+    const record = records.find(r => r.id === id);
+
+    if (!record) {
+        return res.redirect('/history');
+    }
+
+    res.render('history-detail', { record });
+});
+
 app.get('/vet', (req, res) => {
     res.render('vet');
 });

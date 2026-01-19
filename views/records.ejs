@@ -31,7 +31,8 @@
                     </div>
                     <% } else { %>
                         <% records.forEach(record=> { %>
-                            <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
+                            <a href="/history/<%= record.id %>"
+                                class="block glass p-4 rounded-2xl flex items-center gap-4 border border-white/5 hover:bg-white/5 transition-colors">
                                 <div
                                     class="w-12 h-12 rounded-full <%= record.score >= 80 ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-400' %> flex items-center justify-center font-bold text-sm">
                                     <%= record.date %>
@@ -48,7 +49,12 @@
                                     class="<%= record.score >= 80 ? 'text-blue-400' : 'text-red-400' %> font-bold text-lg">
                                     <%= record.score %>점
                                 </div>
-                            </div>
+                                <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
                             <% }) %>
                                 <% } %>
             </div>
