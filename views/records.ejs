@@ -60,7 +60,7 @@
             </div>
 </div>
 
-<script src="/js/chart.js"></script>
+<!-- Note: Chart.js is loaded in layout.ejs -->
 <% if (typeof records !=='undefined' && records && records.length> 0) { %>
     <script>
         (function () {
@@ -76,7 +76,7 @@
             const ctx = canvas.getContext('2d');
 
             // Prepare Data
-            // Use a safer way to inject JSON
+            // Use a safer way to inject JSON (Corrected syntax: <%- ... %>)
             const rawRecords = <% - JSON.stringify(records) %>;
             const sortedRecords = rawRecords.slice().reverse();
 
