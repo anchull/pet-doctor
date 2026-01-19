@@ -1,114 +1,103 @@
-<div class="p-6 pt-12 pb-32">
-    <!-- Header -->
-    <header class="flex justify-between items-start mb-8">
+<div class="p-4 pt-10 pb-28">
+    <!-- Compact Header -->
+    <header class="flex justify-between items-center mb-4">
         <div>
-            <p class="text-gray-400 text-sm mb-1">안녕하세요,</p>
-            <h1 class="text-3xl font-bold" id="headerPetName">
-                <%= selectedPet ? selectedPet.name : 'Pet' %> <br>
-                    검사할 준비 되셨나요?
+            <h1 class="text-xl font-bold" id="headerPetName">
+                <%= selectedPet ? selectedPet.name : 'Pet' %> 검사 준비
             </h1>
         </div>
-        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-            <span class="text-xs font-bold">Lab</span>
+        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+            <span class="text-[10px] font-bold">Lab</span>
         </div>
     </header>
 
-    <!-- Pet Selector (Horizontal Scroll) -->
+    <!-- Compact Pet Selector -->
     <% if (pets.length> 0) { %>
-        <div class="mb-8">
-            <div class="flex overflow-x-auto hide-scrollbar -mx-6 px-6 pb-4">
+        <div class="mb-4">
+            <div class="flex overflow-x-auto hide-scrollbar -mx-4 px-4 pb-2">
                 <% pets.forEach((pet, index)=> {
                     const isSelected = selectedPet && pet.id === selectedPet.id;
                     %>
                     <button type="button"
-                        class="pet-selector flex-shrink-0 mr-4 flex flex-col items-center gap-2 cursor-pointer"
+                        class="pet-selector flex-shrink-0 mr-3 flex flex-col items-center gap-1 cursor-pointer"
                         data-pet-id="<%= pet.id %>" data-pet-name="<%= pet.name %>" data-pet-breed="<%= pet.breed %>"
                         data-pet-age="<%= pet.age %>" data-pet-weight="<%= pet.weight %>"
                         data-pet-gender="<%= pet.gender %>">
                         <div
-                            class="pet-circle w-16 h-16 rounded-full flex items-center justify-center border-2 <%= isSelected ? 'border-primary bg-primary text-white' : 'border-white/20 bg-white/5 text-gray-400' %> shadow-lg transition-all">
-                            <span class="text-xl font-bold">
+                            class="pet-circle w-12 h-12 rounded-full flex items-center justify-center border-2 <%= isSelected ? 'border-primary bg-primary text-white' : 'border-white/20 bg-white/5 text-gray-400' %> shadow-lg transition-all">
+                            <span class="text-lg font-bold">
                                 <%= pet.name[0] %>
                             </span>
                         </div>
                         <span
-                            class="pet-name <%= isSelected ? 'text-primary font-bold' : 'text-gray-400' %> text-sm transition-colors">
+                            class="pet-name <%= isSelected ? 'text-primary font-bold' : 'text-gray-400' %> text-xs transition-colors">
                             <%= pet.name %>
                         </span>
                     </button>
                     <% }) %>
-
-                        <!-- Link to Add Pet -->
-                        <a href="/new" class="flex-shrink-0 mr-4 flex flex-col items-center gap-2 group">
+                        <a href="/new" class="flex-shrink-0 mr-3 flex flex-col items-center gap-1 group">
                             <div
-                                class="w-16 h-16 rounded-full flex items-center justify-center border-2 border-dashed border-white/30 bg-white/5 text-gray-400 group-hover:border-primary group-hover:text-primary transition-colors">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="w-12 h-12 rounded-full flex items-center justify-center border-2 border-dashed border-white/30 bg-white/5 text-gray-400 group-hover:border-primary group-hover:text-primary transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4"></path>
                                 </svg>
                             </div>
-                            <span class="text-gray-400 text-sm">추가</span>
+                            <span class="text-gray-400 text-xs">추가</span>
                         </a>
             </div>
         </div>
         <% } %>
 
-            <!-- Selected Pet Info Card -->
-            <% if (selectedPet) { %>
-                <div id="petInfoCard" class="glass p-4 rounded-2xl mb-6 flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <span class="text-2xl font-bold" id="petInfoInitial">
-                            <%= selectedPet.name[0] %>
-                        </span>
+            <!-- Compact AI Analysis Card -->
+            <div class="w-full glass rounded-2xl p-4 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-primary/20 rounded-full blur-2xl -mr-8 -mt-8"></div>
+
+                <div class="relative z-10">
+                    <div
+                        class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/30 text-primary text-[10px] font-bold mb-3 border border-primary/20">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
+                            </path>
+                        </svg>
+                        AI Analysis
                     </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-lg" id="petInfoName">
-                            <%= selectedPet.name %>
-                        </h3>
-                        <p class="text-xs text-gray-400">
-                            <span id="petInfoBreed">
-                                <%= selectedPet.breed %>
-                            </span> •
-                            <span id="petInfoAge">
-                                <%= selectedPet.age %>
-                            </span>살 •
-                            <span id="petInfoWeight">
-                                <%= selectedPet.weight %>
-                            </span>kg
-                        </p>
-                    </div>
-                    <a href="/my/pets" class="text-xs text-primary">관리 →</a>
+
+                    <h2 class="text-lg font-bold mb-1">정밀 소변 검사</h2>
+                    <p class="text-gray-400 text-xs mb-4">AI가 분석하는 10가지 건강 지표</p>
+
+                    <a href="/scan"
+                        class="block w-full py-3 bg-white text-gray-900 rounded-xl font-bold text-base hover:bg-gray-100 transition-colors shadow-lg text-center">
+                        검사 시작하기
+                    </a>
                 </div>
-                <% } %>
+            </div>
 
-                    <!-- AI Analysis Card -->
-                    <div class="w-full glass rounded-3xl p-6 relative overflow-hidden mb-8">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl -mr-10 -mt-10">
-                        </div>
-
-                        <div class="relative z-10">
-                            <div
-                                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/30 text-primary text-xs font-bold mb-4 border border-primary/20">
-                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
-                                    </path>
-                                </svg>
-                                AI Analysis
-                            </div>
-
-                            <h2 class="text-2xl font-bold mb-2">정밀 소변 검사</h2>
-                            <p class="text-gray-400 text-sm mb-8 leading-relaxed">
-                                AI가 분석하는 10가지 건강 지표<br>
-                                지금 바로 확인하세요
-                            </p>
-
-                            <a href="/scan"
-                                class="block w-full py-4 bg-white text-gray-900 rounded-xl font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg text-center">
-                                검사 시작하기
-                            </a>
-                        </div>
+            <!-- Quick Actions -->
+            <div class="mt-4 grid grid-cols-2 gap-3">
+                <a href="/history"
+                    class="glass p-3 rounded-xl flex items-center gap-3 hover:bg-white/5 transition-colors">
+                    <div class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                            </path>
+                        </svg>
                     </div>
+                    <span class="text-sm font-bold">검사 기록</span>
+                </a>
+                <a href="/vet" class="glass p-3 rounded-xl flex items-center gap-3 hover:bg-white/5 transition-colors">
+                    <div class="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center text-green-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
+                            </path>
+                        </svg>
+                    </div>
+                    <span class="text-sm font-bold">상담</span>
+                </a>
+            </div>
 </div>
 
 <script>
@@ -136,14 +125,7 @@
             nameSpan.classList.add('text-primary', 'font-bold');
 
             // Update header
-            document.getElementById('headerPetName').innerHTML = petName + '<br>검사할 준비 되셨나요?';
-
-            // Update info card
-            document.getElementById('petInfoInitial').textContent = petName[0];
-            document.getElementById('petInfoName').textContent = petName;
-            document.getElementById('petInfoBreed').textContent = this.dataset.petBreed;
-            document.getElementById('petInfoAge').textContent = this.dataset.petAge;
-            document.getElementById('petInfoWeight').textContent = this.dataset.petWeight;
+            document.getElementById('headerPetName').textContent = petName + ' 검사 준비';
 
             // Save selection to server
             fetch('/pets/select/' + petId, {
