@@ -4,7 +4,7 @@
         <div>
             <p class="text-gray-400 text-sm mb-1">안녕하세요,</p>
             <h1 class="text-3xl font-bold" id="headerPetName">
-                <%= pets.length> 0 ? pets[0].name : 'Pet' %> <br>
+                <%= selectedPet ? selectedPet.name : 'Pet' %> <br>
                     검사할 준비 되셨나요?
             </h1>
         </div>
@@ -17,20 +17,22 @@
     <% if (pets.length> 0) { %>
         <div class="mb-8">
             <div class="flex overflow-x-auto hide-scrollbar -mx-6 px-6 pb-4">
-                <% pets.forEach((pet, index)=> { %>
+                <% pets.forEach((pet, index)=> {
+                    const isSelected = selectedPet && pet.id === selectedPet.id;
+                    %>
                     <button type="button"
                         class="pet-selector flex-shrink-0 mr-4 flex flex-col items-center gap-2 cursor-pointer"
-                        data-pet-name="<%= pet.name %>" data-pet-breed="<%= pet.breed %>" data-pet-age="<%= pet.age %>"
-                        data-pet-weight="<%= pet.weight %>" data-pet-gender="<%= pet.gender %>"
-                        data-index="<%= index %>">
+                        data-pet-id="<%= pet.id %>" data-pet-name="<%= pet.name %>" data-pet-breed="<%= pet.breed %>"
+                        data-pet-age="<%= pet.age %>" data-pet-weight="<%= pet.weight %>"
+                        data-pet-gender="<%= pet.gender %>">
                         <div
-                            class="pet-circle w-16 h-16 rounded-full flex items-center justify-center border-2 <%= index === 0 ? 'border-primary bg-primary text-white' : 'border-white/20 bg-white/5 text-gray-400' %> shadow-lg transition-all">
+                            class="pet-circle w-16 h-16 rounded-full flex items-center justify-center border-2 <%= isSelected ? 'border-primary bg-primary text-white' : 'border-white/20 bg-white/5 text-gray-400' %> shadow-lg transition-all">
                             <span class="text-xl font-bold">
                                 <%= pet.name[0] %>
                             </span>
                         </div>
                         <span
-                            class="pet-name <%= index === 0 ? 'text-primary font-bold' : 'text-gray-400' %> text-sm transition-colors">
+                            class="pet-name <%= isSelected ? 'text-primary font-bold' : 'text-gray-400' %> text-sm transition-colors">
                             <%= pet.name %>
                         </span>
                     </button>
@@ -52,26 +54,26 @@
         <% } %>
 
             <!-- Selected Pet Info Card -->
-            <% if (pets.length> 0) { %>
+            <% if (selectedPet) { %>
                 <div id="petInfoCard" class="glass p-4 rounded-2xl mb-6 flex items-center gap-4">
                     <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                         <span class="text-2xl font-bold" id="petInfoInitial">
-                            <%= pets[0].name[0] %>
+                            <%= selectedPet.name[0] %>
                         </span>
                     </div>
                     <div class="flex-1">
                         <h3 class="font-bold text-lg" id="petInfoName">
-                            <%= pets[0].name %>
+                            <%= selectedPet.name %>
                         </h3>
                         <p class="text-xs text-gray-400">
                             <span id="petInfoBreed">
-                                <%= pets[0].breed %>
+                                <%= selectedPet.breed %>
                             </span> •
                             <span id="petInfoAge">
-                                <%= pets[0].age %>
+                                <%= selectedPet.age %>
                             </span>살 •
                             <span id="petInfoWeight">
-                                <%= pets[0].weight %>
+                                <%= selectedPet.weight %>
                             </span>kg
                         </p>
                     </div>
@@ -118,7 +120,10 @@
 <script>
     document.querySelectorAll('.pet-selector').forEach(btn => {
         btn.addEventListener('click', function () {
-            // Update circles
+            const petId = this.dataset.petId;
+            const petName = this.dataset.petName;
+
+            // Update circles visually
             document.querySelectorAll('.pet-selector').forEach(b => {
                 const circle = b.querySelector('.pet-circle');
                 const name = b.querySelector('.pet-name');
@@ -137,7 +142,6 @@
             nameSpan.classList.add('text-primary', 'font-bold');
 
             // Update header
-            const petName = this.dataset.petName;
             document.getElementById('headerPetName').innerHTML = petName + '<br>검사할 준비 되셨나요?';
 
             // Update info card
@@ -146,6 +150,12 @@
             document.getElementById('petInfoBreed').textContent = this.dataset.petBreed;
             document.getElementById('petInfoAge').textContent = this.dataset.petAge;
             document.getElementById('petInfoWeight').textContent = this.dataset.petWeight;
+
+            // Save selection to server
+            fetch('/pets/select/' + petId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
         });
     });
 </script>

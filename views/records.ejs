@@ -1,63 +1,86 @@
 <div class="p-6 pt-12 pb-32">
-    <h1 class="text-2xl font-bold mb-6">건강 기록</h1>
+    <h1 class="text-2xl font-bold mb-2">건강 기록</h1>
 
-    <!-- Graph Card -->
-    <% if (typeof records !=='undefined' && records && records.length> 0) { %>
-        <div class="glass p-4 rounded-3xl mb-8">
-            <h3 class="text-sm font-bold text-gray-400 mb-4">최근 건강 변화</h3>
-            <div class="h-64">
-                <canvas id="healthChart"></canvas>
-            </div>
+    <!-- Pet Filter -->
+    <% if (pets && pets.length> 0) { %>
+        <div class="flex overflow-x-auto hide-scrollbar -mx-6 px-6 pb-4 mb-4">
+            <% pets.forEach(pet=> {
+                const isSelected = selectedPet && pet.id === selectedPet.id;
+                %>
+                <a href="javascript:void(0)" onclick="selectPet(<%= pet.id %>)"
+                    class="pet-filter-btn flex-shrink-0 mr-2 px-4 py-2 rounded-full text-sm font-bold transition-colors <%= isSelected ? 'bg-primary text-white' : 'bg-white/10 text-gray-400' %>"
+                    data-pet-id="<%= pet.id %>">
+                    <%= pet.name %>
+                </a>
+                <% }) %>
         </div>
         <% } %>
 
-            <!-- Timeline -->
-            <h3 class="text-lg font-bold mb-4">검사 이력</h3>
-            <div class="space-y-4">
-                <% if (typeof records==='undefined' || !records || records.length===0) { %>
-                    <!-- Empty State -->
-                    <div class="glass p-8 rounded-3xl flex flex-col items-center justify-center text-center opacity-70">
-                        <svg class="w-16 h-16 text-white/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                        <h3 class="font-bold text-lg mb-1">아직 검사 기록이 없어요</h3>
-                        <p class="text-sm text-gray-400 mb-6">첫 소변 검사를 진행해서<br>우리 아이 건강 상태를 확인해보세요!</p>
-                        <a href="/scan"
-                            class="bg-primary hover:bg-primary-600 text-white font-bold py-3 px-6 rounded-xl transition-colors">
-                            검사 시작하기
-                        </a>
+            <!-- Graph Card -->
+            <% if (typeof records !=='undefined' && records && records.length> 0) { %>
+                <div class="glass p-4 rounded-3xl mb-8">
+                    <h3 class="text-sm font-bold text-gray-400 mb-4">
+                        <% if (selectedPet) { %>
+                            <%= selectedPet.name %>의 <% } %>최근 건강 변화
+                    </h3>
+                    <div class="h-64">
+                        <canvas id="healthChart"></canvas>
                     </div>
-                    <% } else { %>
-                        <% records.forEach(record=> { %>
-                            <a href="/history/<%= record.id %>"
-                                class="block glass p-4 rounded-2xl flex items-center gap-4 border border-white/5 hover:bg-white/5 transition-colors">
-                                <div
-                                    class="w-12 h-12 rounded-full <%= record.score >= 80 ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-400' %> flex items-center justify-center font-bold text-sm">
-                                    <%= record.date %>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="font-bold">
-                                        <%= record.type %>
-                                    </h3>
-                                    <p class="text-xs text-gray-400">
-                                        <%= record.summary %> • <%= record.results.length %>개 항목
-                                    </p>
-                                </div>
-                                <div
-                                    class="<%= record.score >= 80 ? 'text-blue-400' : 'text-red-400' %> font-bold text-lg">
-                                    <%= record.score %>점
-                                </div>
-                                <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor"
+                </div>
+                <% } %>
+
+                    <!-- Timeline -->
+                    <h3 class="text-lg font-bold mb-4">검사 이력</h3>
+                    <div class="space-y-4">
+                        <% if (typeof records==='undefined' || !records || records.length===0) { %>
+                            <!-- Empty State -->
+                            <div
+                                class="glass p-8 rounded-3xl flex flex-col items-center justify-center text-center opacity-70">
+                                <svg class="w-16 h-16 text-white/20 mb-4" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5l7 7-7 7"></path>
+                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                    </path>
                                 </svg>
-                            </a>
-                            <% }) %>
-                                <% } %>
-            </div>
+                                <h3 class="font-bold text-lg mb-1">
+                                    <% if (selectedPet) { %>
+                                        <%= selectedPet.name %>의 <% } %>검사 기록이 없어요
+                                </h3>
+                                <p class="text-sm text-gray-400 mb-6">첫 소변 검사를 진행해서<br>우리 아이 건강 상태를 확인해보세요!</p>
+                                <a href="/scan"
+                                    class="bg-primary hover:bg-primary-600 text-white font-bold py-3 px-6 rounded-xl transition-colors">
+                                    검사 시작하기
+                                </a>
+                            </div>
+                            <% } else { %>
+                                <% records.forEach(record=> { %>
+                                    <a href="/history/<%= record.id %>"
+                                        class="block glass p-4 rounded-2xl flex items-center gap-4 border border-white/5 hover:bg-white/5 transition-colors">
+                                        <div
+                                            class="w-12 h-12 rounded-full <%= record.score >= 80 ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-400' %> flex items-center justify-center font-bold text-sm">
+                                            <%= record.date %>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h3 class="font-bold">
+                                                <%= record.petName || record.type %>
+                                            </h3>
+                                            <p class="text-xs text-gray-400">
+                                                <%= record.summary %> • <%= record.results.length %>개 항목
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="<%= record.score >= 80 ? 'text-blue-400' : 'text-red-400' %> font-bold text-lg">
+                                            <%= record.score %>점
+                                        </div>
+                                        <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                    <% }) %>
+                                        <% } %>
+                    </div>
 </div>
 
 <!-- Note: Chart.js is loaded in layout.ejs -->
@@ -67,7 +90,6 @@
             const canvas = document.getElementById('healthChart');
             if (!canvas) return;
 
-            // Cleanup previous chart instance if it exists (prevents hover glitches & memory leaks)
             const existingChart = Chart.getChart(canvas);
             if (existingChart) {
                 existingChart.destroy();
@@ -75,14 +97,12 @@
 
             const ctx = canvas.getContext('2d');
 
-            // Prepare Data
-            const rawRecords = <%- JSON.stringify(records) %>;
+            const rawRecords = <% - JSON.stringify(records) %>;
             const sortedRecords = rawRecords.slice().reverse();
 
             const labels = sortedRecords.map(r => r.date);
             const scores = sortedRecords.map(r => r.score);
 
-            // Gradient
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, 'rgba(1, 117, 194, 0.5)');
             gradient.addColorStop(1, 'rgba(1, 117, 194, 0)');
@@ -127,5 +147,25 @@
                 }
             });
         })();
+
+        function selectPet(petId) {
+            fetch('/pets/select/' + petId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(() => {
+                window.location.reload();
+            });
+        }
     </script>
-    <% } %>
+    <% } else { %>
+        <script>
+            function selectPet(petId) {
+                fetch('/pets/select/' + petId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        </script>
+        <% } %>

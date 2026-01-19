@@ -61,6 +61,10 @@ app.use((req, res, next) => {
     }
 
     req.userId = userId;
+
+    // Selected Pet ID from cookie (defaults to first pet)
+    req.selectedPetId = req.cookies.selectedPetId ? parseInt(req.cookies.selectedPetId) : null;
+
     res.locals.path = req.path;
     res.locals.userId = userId; // Make available to all views globally
     next();
@@ -81,10 +85,27 @@ const setPets = (req, newPets) => {
     saveDb();
 };
 const getRecords = (req) => getUserData(req).records;
+const getRecordsByPet = (req, petId) => {
+    const records = getRecords(req);
+    if (!petId) return records;
+    return records.filter(r => r.petId === petId || !r.petId); // Include old records without petId
+};
 const addRecord = (req, record) => {
     const data = getUserData(req);
     data.records.unshift(record); // Newest first
     saveDb();
+};
+
+// Get selected pet or first pet
+const getSelectedPet = (req) => {
+    const pets = getPets(req);
+    if (pets.length === 0) return null;
+
+    if (req.selectedPetId) {
+        const found = pets.find(p => p.id === req.selectedPetId);
+        if (found) return found;
+    }
+    return pets[0]; // Default to first pet
 };
 
 // Routes
@@ -93,10 +114,18 @@ app.get('/', (req, res) => {
     if (pets.length === 0) {
         return res.redirect('/onboarding');
     }
-    res.render('index', { pets });
+    const selectedPet = getSelectedPet(req);
+    res.render('index', { pets, selectedPet });
 });
 app.get('/home', (req, res) => {
     res.redirect('/');
+});
+
+// Select Pet Route (AJAX/API)
+app.post('/pets/select/:id', (req, res) => {
+    const petId = parseInt(req.params.id);
+    res.cookie('selectedPetId', petId, { maxAge: 90 * 24 * 60 * 60 * 1000, httpOnly: true });
+    res.json({ success: true, petId });
 });
 
 app.get('/scan', (req, res) => {
@@ -104,7 +133,8 @@ app.get('/scan', (req, res) => {
 });
 
 app.get('/scan/guide', (req, res) => {
-    res.render('scan/guide');
+    const selectedPet = getSelectedPet(req);
+    res.render('scan/guide', { selectedPet });
 });
 
 app.get('/scan/timer', (req, res) => {
@@ -122,6 +152,9 @@ app.get('/scan/result', (req, res) => {
 
 app.post('/scan/analyze', async (req, res) => {
     await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Get selected pet
+    const selectedPet = getSelectedPet(req);
 
     // Mock Analysis Logic
     const parameters = [
@@ -157,9 +190,11 @@ app.post('/scan/analyze', async (req, res) => {
 
     const score = Math.max(40, 100 - totalPenalty);
 
-    // Save to History
+    // Save to History with Pet ID
     const newRecord = {
         id: Date.now(),
+        petId: selectedPet ? selectedPet.id : null,
+        petName: selectedPet ? selectedPet.name : '알 수 없음',
         date: new Date().toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' }),
         fullDate: new Date().toISOString(),
         type: '소변 검사',
@@ -169,12 +204,15 @@ app.post('/scan/analyze', async (req, res) => {
     };
     addRecord(req, newRecord);
 
-    res.render('scan/result', { score, results });
+    res.render('scan/result', { score, results, petName: newRecord.petName });
 });
 
 app.get('/history', (req, res) => {
-    const records = getRecords(req);
-    res.render('records', { records });
+    const pets = getPets(req);
+    const selectedPet = getSelectedPet(req);
+    const petId = selectedPet ? selectedPet.id : null;
+    const records = getRecordsByPet(req, petId);
+    res.render('records', { records, pets, selectedPet });
 });
 
 // Detail View Route
@@ -242,6 +280,9 @@ app.post('/pets', (req, res) => {
 
     pets.push(newPet);
     setPets(req, pets); // Save specific user data
+
+    // Auto-select newly added pet
+    res.cookie('selectedPetId', newPet.id, { maxAge: 90 * 24 * 60 * 60 * 1000, httpOnly: true });
     res.redirect('/');
 });
 
