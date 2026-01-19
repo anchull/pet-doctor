@@ -76,7 +76,6 @@
             const ctx = canvas.getContext('2d');
 
             // Prepare Data
-            // Corrected syntax: <%- ... %> (No space between <% and -)
             const rawRecords = <%- JSON.stringify(records) %>;
             const sortedRecords = rawRecords.slice().reverse();
 
