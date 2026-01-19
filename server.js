@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Data Persistence (Multi-User)
 const DATA_FILE = path.join(__dirname, 'data', 'db.json');
-let db = {}; // Structure: { "USER_ID": [pets...] }
+let db = {}; // Structure: { "USER_ID": { pets: [], records: [] } }
 
 // Load data on start
 try {
@@ -51,7 +51,12 @@ app.use((req, res, next) => {
 
     // Ensure storage exists for this user
     if (!db[userId]) {
-        db[userId] = [];
+        db[userId] = { pets: [], records: [] };
+        saveDb();
+    }
+    // Migration for old array format if any
+    else if (Array.isArray(db[userId])) {
+        db[userId] = { pets: db[userId], records: [] };
         saveDb();
     }
 
@@ -62,9 +67,23 @@ app.use((req, res, next) => {
 });
 
 // Helper functions (Scoped to User)
-const getPets = (req) => db[req.userId] || [];
+const getUserData = (req) => {
+    let data = db[req.userId];
+    if (!data.pets) data.pets = [];
+    if (!data.records) data.records = [];
+    return data;
+};
+
+const getPets = (req) => getUserData(req).pets;
 const setPets = (req, newPets) => {
-    db[req.userId] = newPets;
+    const data = getUserData(req);
+    data.pets = newPets;
+    saveDb();
+};
+const getRecords = (req) => getUserData(req).records;
+const addRecord = (req, record) => {
+    const data = getUserData(req);
+    data.records.unshift(record); // Newest first
     saveDb();
 };
 
@@ -137,11 +156,25 @@ app.post('/scan/analyze', async (req, res) => {
     });
 
     const score = Math.max(40, 100 - totalPenalty);
+
+    // Save to History
+    const newRecord = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' }),
+        fullDate: new Date().toISOString(),
+        type: '소변 검사',
+        score: score,
+        results: results,
+        summary: score >= 80 ? '정상' : '주의'
+    };
+    addRecord(req, newRecord);
+
     res.render('scan/result', { score, results });
 });
 
 app.get('/history', (req, res) => {
-    res.render('records');
+    const records = getRecords(req);
+    res.render('records', { records });
 });
 
 app.get('/vet', (req, res) => {
@@ -150,7 +183,7 @@ app.get('/vet', (req, res) => {
 
 app.get('/my', (req, res) => {
     const pets = getPets(req);
-    res.render('my/index', { pets }); // userId is already in res.locals
+    res.render('my/index', { pets, userId: req.userId });
 });
 
 app.get('/my/pets', (req, res) => {

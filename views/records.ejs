@@ -2,79 +2,113 @@
     <h1 class="text-2xl font-bold mb-6">건강 기록</h1>
 
     <!-- Graph Card -->
-    <div class="glass p-4 rounded-3xl mb-8">
-        <h3 class="text-sm font-bold text-gray-400 mb-4">최근 건강 변화</h3>
-        <div class="h-64">
-            <canvas id="healthChart"></canvas>
+    <% if (typeof records !=='undefined' && records && records.length> 0) { %>
+        <div class="glass p-4 rounded-3xl mb-8">
+            <h3 class="text-sm font-bold text-gray-400 mb-4">최근 건강 변화</h3>
+            <div class="h-64">
+                <canvas id="healthChart"></canvas>
+            </div>
         </div>
-    </div>
+        <% } %>
 
-    <!-- Timeline -->
-    <h3 class="text-lg font-bold mb-4">검사 이력</h3>
-    <div class="space-y-4">
-        <!-- Empty State -->
-        <div class="glass p-8 rounded-3xl flex flex-col items-center justify-center text-center opacity-70">
-            <svg class="w-16 h-16 text-white/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                </path>
-            </svg>
-            <h3 class="font-bold text-lg mb-1">아직 검사 기록이 없어요</h3>
-            <p class="text-sm text-gray-400 mb-6">첫 소변 검사를 진행해서<br>우리 아이 건강 상태를 확인해보세요!</p>
-            <a href="/scan"
-                class="bg-primary hover:bg-primary-600 text-white font-bold py-3 px-6 rounded-xl transition-colors">
-                검사 시작하기
-            </a>
-        </div>
-    </div>
+            <!-- Timeline -->
+            <h3 class="text-lg font-bold mb-4">검사 이력</h3>
+            <div class="space-y-4">
+                <% if (typeof records==='undefined' || !records || records.length===0) { %>
+                    <!-- Empty State -->
+                    <div class="glass p-8 rounded-3xl flex flex-col items-center justify-center text-center opacity-70">
+                        <svg class="w-16 h-16 text-white/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                            </path>
+                        </svg>
+                        <h3 class="font-bold text-lg mb-1">아직 검사 기록이 없어요</h3>
+                        <p class="text-sm text-gray-400 mb-6">첫 소변 검사를 진행해서<br>우리 아이 건강 상태를 확인해보세요!</p>
+                        <a href="/scan"
+                            class="bg-primary hover:bg-primary-600 text-white font-bold py-3 px-6 rounded-xl transition-colors">
+                            검사 시작하기
+                        </a>
+                    </div>
+                    <% } else { %>
+                        <% records.forEach(record=> { %>
+                            <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
+                                <div
+                                    class="w-12 h-12 rounded-full <%= record.score >= 80 ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-400' %> flex items-center justify-center font-bold text-sm">
+                                    <%= record.date %>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold">
+                                        <%= record.type %>
+                                    </h3>
+                                    <p class="text-xs text-gray-400">
+                                        <%= record.summary %> • <%= record.results.length %>개 항목
+                                    </p>
+                                </div>
+                                <div
+                                    class="<%= record.score >= 80 ? 'text-blue-400' : 'text-red-400' %> font-bold text-lg">
+                                    <%= record.score %>점
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } %>
+            </div>
 </div>
 
 <script src="/js/chart.js"></script>
-<script>
-    const ctx = document.getElementById('healthChart').getContext('2d');
+<% if (typeof records !=='undefined' && records && records.length> 0) { %>
+    <script>
+        const ctx = document.getElementById('healthChart').getContext('2d');
 
-    // Gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(1, 117, 194, 0.5)');
-    gradient.addColorStop(1, 'rgba(1, 117, 194, 0)');
+        // Prepare Data (Reverse to show oldest to newest on left-to-right graph)
+        const rawRecords = <% - JSON.stringify(records) %>;
+        const sortedRecords = rawRecords.slice().reverse();
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [{
-                label: '건강 점수',
-                data: [],
-                borderColor: '#0175C2',
-                backgroundColor: gradient,
-                borderWidth: 3,
-                tension: 0.4,
-                pointBackgroundColor: '#1a1c29',
-                pointBorderColor: '#0175C2',
-                pointBorderWidth: 2,
-                pointRadius: 4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
+        const labels = sortedRecords.map(r => r.date);
+        const scores = sortedRecords.map(r => r.score);
+
+        // Gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(1, 117, 194, 0.5)');
+        gradient.addColorStop(1, 'rgba(1, 117, 194, 0)');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '건강 점수',
+                    data: scores,
+                    borderColor: '#0175C2',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointBackgroundColor: '#1a1c29',
+                    pointBorderColor: '#0175C2',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    fill: true
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    min: 60,
-                    max: 100,
-                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
                 },
-                x: {
-                    grid: { display: false },
-                    ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 0,
+                        max: 100,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                    }
                 }
             }
-        }
-    });
-</script>
+        });
+    </script>
+    <% } %>
