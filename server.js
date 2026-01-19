@@ -78,7 +78,7 @@ app.get('/vet', (req, res) => {
 });
 
 app.get('/my', (req, res) => {
-    res.render('my/index', { pets });
+    res.render('my/index', { pets, userId: req.userId });
 });
 
 app.get('/my/pets', (req, res) => {
