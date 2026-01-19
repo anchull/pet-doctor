@@ -69,10 +69,16 @@
     }
 
     document.getElementById('capture-btn').addEventListener('click', () => {
-        // Mock capture logic
-        alert("촬영 완료! 분석을 시작합니다.");
-        // Redirect to result page (or home logic)
-        // window.location.href = "/result"; // Not implemented yet
+        // Show loading state (Optional)
+        const btn = document.getElementById('capture-btn');
+        btn.classList.add('scale-90', 'opacity-50');
+
+        // Create a hidden form and submit it to trigger the analysis post
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/scan/analyze';
+        document.body.appendChild(form);
+        form.submit();
     });
 
     // Start on load (if Turbo handles it)

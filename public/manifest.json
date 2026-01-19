@@ -1,0 +1,17 @@
+{
+    "name": "Pet Doctor",
+    "short_name": "PetDoctor",
+    "description": "Smart Veterinary Assistant for your Pets",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1a1c29",
+    "theme_color": "#0175C2",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "https://cdn-icons-png.flaticon.com/512/3047/3047928.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

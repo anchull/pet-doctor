@@ -159,6 +159,57 @@ app.get('/my/privacy', (req, res) => {
     res.render('my/privacy');
 });
 
+app.get('/scan/result', (req, res) => {
+    // Redirect if direct access if needed, or render mock
+    res.redirect('/');
+});
+
+app.post('/scan/analyze', async (req, res) => {
+    // Simulate processing delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Mock Analysis Logic
+    const parameters = [
+        { name: '잠혈 (Blood)', key: 'blood', vals: ['Negative', 'Trace', 'Small', 'Moderate', 'Large'] },
+        { name: '빌리루빈 (Bilirubin)', key: 'bil', vals: ['Negative', '1+'] },
+        { name: '우로빌리노겐 (Urobilinogen)', key: 'uro', vals: ['Normal', '1+'] },
+        { name: '케톤 (Ketones)', key: 'ket', vals: ['Negative', 'Trace'] },
+        { name: '단백질 (Protein)', key: 'pro', vals: ['Negative', 'Trace', '1+'] },
+        { name: '아질산염 (Nitrite)', key: 'nit', vals: ['Negative', 'Positive'] },
+        { name: '포도당 (Glucose)', key: 'glu', vals: ['Negative', 'Trace'] },
+        { name: '산성도 (pH)', key: 'ph', vals: ['5.0', '6.0', '6.5', '7.0', '7.5', '8.0'] },
+        { name: '비중 (S.G)', key: 'sg', vals: ['1.005', '1.010', '1.015', '1.020', '1.025'] },
+        { name: '백혈구 (Leukocytes)', key: 'leu', vals: ['Negative', 'Trace', '1+', '2+'] }
+    ];
+
+    let totalPenalty = 0;
+    const results = parameters.map(param => {
+        // 80% chance of being Normal (index 0)
+        const isNormal = Math.random() > 0.2;
+        let valueIndex = 0;
+
+        if (!isNormal) {
+            // Pick a random abnormal value
+            valueIndex = Math.floor(Math.random() * (param.vals.length - 1)) + 1;
+            totalPenalty += (valueIndex * 10); // Simple penalty logic
+        }
+
+        return {
+            name: param.name,
+            value: param.vals[valueIndex],
+            status: valueIndex === 0 ? 'Normal' : 'Abnormal',
+            description: valueIndex === 0 ? '정상입니다' : '주의가 필요합니다'
+        };
+    });
+
+    // Calculate score (100 - penalties, min 40)
+    const score = Math.max(40, 100 - totalPenalty);
+
+    // Save result (Optional: In a real app, save to history array)
+    // For now, just render
+    res.render('scan/result', { score, results });
+});
+
 app.get('/onboarding', (req, res) => {
     res.render('onboarding');
 });
