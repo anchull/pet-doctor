@@ -63,59 +63,70 @@
 <script src="/js/chart.js"></script>
 <% if (typeof records !=='undefined' && records && records.length> 0) { %>
     <script>
-        const ctx = document.getElementById('healthChart').getContext('2d');
+        (function () {
+            const canvas = document.getElementById('healthChart');
+            if (!canvas) return;
 
-        // Prepare Data
-        // Use a safer way to inject JSON
-        const rawRecords = <% - JSON.stringify(records) %>;
-        const sortedRecords = rawRecords.slice().reverse();
+            // Cleanup previous chart instance if it exists (prevents hover glitches & memory leaks)
+            const existingChart = Chart.getChart(canvas);
+            if (existingChart) {
+                existingChart.destroy();
+            }
 
-        const labels = sortedRecords.map(r => r.date);
-        const scores = sortedRecords.map(r => r.score);
+            const ctx = canvas.getContext('2d');
 
-        // Gradient
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, 'rgba(1, 117, 194, 0.5)');
-        gradient.addColorStop(1, 'rgba(1, 117, 194, 0)');
+            // Prepare Data
+            // Use a safer way to inject JSON
+            const rawRecords = <% - JSON.stringify(records) %>;
+            const sortedRecords = rawRecords.slice().reverse();
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '건강 점수',
-                    data: scores,
-                    borderColor: '#0175C2',
-                    backgroundColor: gradient,
-                    borderWidth: 3,
-                    tension: 0.4,
-                    pointBackgroundColor: '#1a1c29',
-                    pointBorderColor: '#0175C2',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
+            const labels = sortedRecords.map(r => r.date);
+            const scores = sortedRecords.map(r => r.score);
+
+            // Gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(1, 117, 194, 0.5)');
+            gradient.addColorStop(1, 'rgba(1, 117, 194, 0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '건강 점수',
+                        data: scores,
+                        borderColor: '#0175C2',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointBackgroundColor: '#1a1c29',
+                        pointBorderColor: '#0175C2',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        min: 0,
-                        max: 100,
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                        ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
                     },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 0,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                        }
                     }
                 }
-            }
-        });
+            });
+        })();
     </script>
     <% } %>
