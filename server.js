@@ -194,6 +194,18 @@ app.get('/vet', (req, res) => {
     res.render('vet');
 });
 
+app.get('/vet/chat', (req, res) => {
+    res.render('vet/chat');
+});
+
+app.get('/vet/hospitals', (req, res) => {
+    res.render('vet/hospitals');
+});
+
+app.get('/vet/faq', (req, res) => {
+    res.render('vet/faq');
+});
+
 app.get('/my', (req, res) => {
     const pets = getPets(req);
     res.render('my/index', { pets, userId: req.userId });

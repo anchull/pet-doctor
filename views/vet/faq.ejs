@@ -1,0 +1,166 @@
+<div class="p-6 pt-12 pb-32">
+    <!-- Header -->
+    <div class="flex items-center gap-4 mb-6">
+        <a href="/vet" class="p-2 bg-white/10 rounded-full">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </a>
+        <h1 class="text-xl font-bold">자주 묻는 질문</h1>
+    </div>
+
+    <!-- FAQ Categories -->
+    <div class="flex gap-2 overflow-x-auto hide-scrollbar mb-6">
+        <button class="faq-tab active px-4 py-2 bg-primary text-white rounded-full text-sm font-bold whitespace-nowrap"
+            data-category="all">전체</button>
+        <button class="faq-tab px-4 py-2 bg-white/10 text-white/60 rounded-full text-sm font-bold whitespace-nowrap"
+            data-category="test">검사 방법</button>
+        <button class="faq-tab px-4 py-2 bg-white/10 text-white/60 rounded-full text-sm font-bold whitespace-nowrap"
+            data-category="result">결과 해석</button>
+        <button class="faq-tab px-4 py-2 bg-white/10 text-white/60 rounded-full text-sm font-bold whitespace-nowrap"
+            data-category="general">일반 건강</button>
+    </div>
+
+    <!-- FAQ Items -->
+    <div class="space-y-4" id="faqList">
+        <!-- Test Method FAQs -->
+        <div class="faq-item glass p-4 rounded-2xl" data-category="test">
+            <button class="faq-header w-full flex items-center justify-between text-left">
+                <h3 class="font-bold pr-4">검사 스트립을 어떻게 사용하나요?</h3>
+                <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="faq-content hidden mt-4 text-sm text-gray-400 space-y-2">
+                <p>1. 깨끗한 용기에 반려동물의 소변을 채취합니다.</p>
+                <p>2. 검사 스트립을 소변에 1-2초간 담급니다.</p>
+                <p>3. 스트립 가장자리로 여분의 소변을 털어냅니다.</p>
+                <p>4. 60초 후 앱의 카메라로 스트립을 촬영합니다.</p>
+                <p class="text-yellow-400">💡 팁: 직사광선을 피하고 밝은 조명 아래에서 촬영하세요.</p>
+            </div>
+        </div>
+
+        <div class="faq-item glass p-4 rounded-2xl" data-category="test">
+            <button class="faq-header w-full flex items-center justify-between text-left">
+                <h3 class="font-bold pr-4">소변은 어떻게 채취하나요?</h3>
+                <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="faq-content hidden mt-4 text-sm text-gray-400 space-y-2">
+                <p><strong>강아지:</strong> 산책 중 배뇨 시 깨끗한 용기를 소변 줄기 아래에 대세요.</p>
+                <p><strong>고양이:</strong> 비흡수성 모래(전용 모래) 또는 비닐로 덮은 화장실을 사용하세요.</p>
+                <p class="text-green-400">✅ 아침 첫 소변이 가장 농축되어 정확도가 높습니다.</p>
+            </div>
+        </div>
+
+        <!-- Result Interpretation FAQs -->
+        <div class="faq-item glass p-4 rounded-2xl" data-category="result">
+            <button class="faq-header w-full flex items-center justify-between text-left">
+                <h3 class="font-bold pr-4">건강 점수는 어떻게 계산되나요?</h3>
+                <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="faq-content hidden mt-4 text-sm text-gray-400 space-y-2">
+                <p>건강 점수는 10가지 소변 지표를 종합적으로 분석하여 계산됩니다:</p>
+                <ul class="list-disc list-inside pl-2 space-y-1">
+                    <li>80-100점: 정상 범위</li>
+                    <li>60-79점: 주의 필요 - 일부 항목이 정상 범위를 벗어남</li>
+                    <li>60점 미만: 수의사 상담 권장</li>
+                </ul>
+                <p class="text-blue-400">ℹ️ 점수는 참고용이며, 정확한 진단은 수의사 상담이 필요합니다.</p>
+            </div>
+        </div>
+
+        <div class="faq-item glass p-4 rounded-2xl" data-category="result">
+            <button class="faq-header w-full flex items-center justify-between text-left">
+                <h3 class="font-bold pr-4">비정상 결과가 나오면 어떻게 하나요?</h3>
+                <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="faq-content hidden mt-4 text-sm text-gray-400 space-y-2">
+                <p>비정상 결과가 나왔다고 바로 걱정하지 마세요:</p>
+                <p>1. <strong>재검사</strong>: 2-3일 후 다시 검사해 보세요. 일시적인 변화일 수 있습니다.</p>
+                <p>2. <strong>증상 관찰</strong>: 식욕, 활동량, 음수량 변화가 있는지 확인하세요.</p>
+                <p>3. <strong>수의사 상담</strong>: 비정상 결과가 지속되거나 다른 증상이 있다면 병원을 방문하세요.</p>
+                <p class="text-red-400">⚠️ 혈뇨, 배뇨 곤란 등 심각한 증상은 즉시 병원을 방문하세요.</p>
+            </div>
+        </div>
+
+        <!-- General Health FAQs -->
+        <div class="faq-item glass p-4 rounded-2xl" data-category="general">
+            <button class="faq-header w-full flex items-center justify-between text-left">
+                <h3 class="font-bold pr-4">얼마나 자주 검사해야 하나요?</h3>
+                <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="faq-content hidden mt-4 text-sm text-gray-400 space-y-2">
+                <p><strong>건강한 반려동물:</strong> 월 1회 정기 검사 권장</p>
+                <p><strong>7세 이상 노령:</strong> 월 2회 권장</p>
+                <p><strong>기저 질환이 있는 경우:</strong> 수의사 지시에 따라 더 자주</p>
+                <p class="text-green-400">✅ 정기적인 검사로 조기에 이상을 발견할 수 있습니다.</p>
+            </div>
+        </div>
+
+        <div class="faq-item glass p-4 rounded-2xl" data-category="general">
+            <button class="faq-header w-full flex items-center justify-between text-left">
+                <h3 class="font-bold pr-4">요로 건강을 위해 무엇을 해야 하나요?</h3>
+                <svg class="w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div class="faq-content hidden mt-4 text-sm text-gray-400 space-y-2">
+                <p>🚰 <strong>충분한 수분 섭취</strong>: 항상 신선한 물을 제공하세요.</p>
+                <p>🥗 <strong>균형 잡힌 식단</strong>: 고품질 사료를 급여하세요.</p>
+                <p>🚽 <strong>규칙적인 배뇨</strong>: 충분한 배뇨 기회를 제공하세요.</p>
+                <p>🧹 <strong>청결한 환경</strong>: 화장실을 깨끗하게 유지하세요.</p>
+                <p>📊 <strong>정기 검사</strong>: 소변 검사로 조기에 이상을 발견하세요.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // FAQ Accordion
+    document.querySelectorAll('.faq-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('svg');
+
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        });
+    });
+
+    // Category Filter
+    document.querySelectorAll('.faq-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Update active tab
+            document.querySelectorAll('.faq-tab').forEach(t => {
+                t.classList.remove('active', 'bg-primary', 'text-white');
+                t.classList.add('bg-white/10', 'text-white/60');
+            });
+            tab.classList.add('active', 'bg-primary', 'text-white');
+            tab.classList.remove('bg-white/10', 'text-white/60');
+
+            // Filter items
+            const category = tab.dataset.category;
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    });
+</script>

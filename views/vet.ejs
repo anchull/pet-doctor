@@ -1,10 +1,10 @@
-<div class="p-6 pt-12">
+<div class="p-6 pt-12 pb-32">
     <h1 class="text-2xl font-bold mb-2">수의사 상담</h1>
     <p class="text-gray-400 mb-8">궁금한 점을 언제든 물어보세요</p>
 
     <div class="grid gap-4">
         <!-- AI Chat Card -->
-        <div class="glass p-6 rounded-3xl relative overflow-hidden group">
+        <a href="/vet/chat" class="glass p-6 rounded-3xl relative overflow-hidden group block">
             <div
                 class="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl -mr-10 -mt-10 transition-all group-hover:bg-primary/30">
             </div>
@@ -18,13 +18,13 @@
                 </div>
                 <h3 class="text-xl font-bold mb-1">AI 수의사 채팅</h3>
                 <p class="text-sm text-gray-400 mb-4">24시간 언제든 질문하세요</p>
-                <button
-                    class="px-4 py-2 bg-white/10 rounded-lg text-sm font-bold hover:bg-white/20 transition-colors">상담하기</button>
+                <span class="px-4 py-2 bg-white/10 rounded-lg text-sm font-bold inline-block">상담하기 →</span>
             </div>
-        </div>
+        </a>
 
         <!-- Hospital Finder -->
-        <div class="glass p-6 rounded-3xl relative overflow-hidden">
+        <a href="/vet/hospitals"
+            class="glass p-6 rounded-3xl relative overflow-hidden block hover:bg-white/5 transition-colors">
             <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mb-4 text-green-400">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -35,10 +35,11 @@
             </div>
             <h3 class="text-xl font-bold mb-1">주변 병원 찾기</h3>
             <p class="text-sm text-gray-400">가까운 동물병원을 찾아드려요</p>
-        </div>
+        </a>
 
         <!-- FAQ -->
-        <div class="glass p-6 rounded-3xl relative overflow-hidden">
+        <a href="/vet/faq"
+            class="glass p-6 rounded-3xl relative overflow-hidden block hover:bg-white/5 transition-colors">
             <div class="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mb-4 text-purple-400">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -48,6 +49,6 @@
             </div>
             <h3 class="text-xl font-bold mb-1">자주 묻는 질문</h3>
             <p class="text-sm text-gray-400">검사 방법, 해석 가이드 등</p>
-        </div>
+        </a>
     </div>
 </div>

@@ -1,0 +1,137 @@
+<div class="p-6 pt-12 pb-32">
+    <!-- Header -->
+    <div class="flex items-center gap-4 mb-6">
+        <a href="/vet" class="p-2 bg-white/10 rounded-full">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </a>
+        <h1 class="text-xl font-bold">주변 병원 찾기</h1>
+    </div>
+
+    <!-- Map Placeholder -->
+    <div class="glass rounded-3xl overflow-hidden mb-6">
+        <div class="h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 flex items-center justify-center">
+            <div class="text-center">
+                <svg class="w-12 h-12 text-green-400 mx-auto mb-2" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <p class="text-sm text-gray-400">현재 위치 기반 검색</p>
+                <button id="locationBtn"
+                    class="mt-3 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm font-bold hover:bg-green-500/30 transition-colors">
+                    위치 허용하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hospital List -->
+    <h3 class="text-lg font-bold mb-4">추천 동물병원</h3>
+    <div class="space-y-4">
+        <!-- Hospital 1 -->
+        <div class="glass p-4 rounded-2xl">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 6h-4v4h4v4h-4V13h-4v4H6v-4h4V9H6V5h4v4h4V5h4v4z" />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-bold">행복한 동물병원</h4>
+                    <p class="text-xs text-gray-400 mb-2">서울시 강남구 역삼동 123-45</p>
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded">영업중</span>
+                        <span class="text-gray-400">09:00 - 21:00</span>
+                        <span class="text-gray-400">• 1.2km</span>
+                    </div>
+                </div>
+                <a href="tel:02-123-4567"
+                    class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Hospital 2 -->
+        <div class="glass p-4 rounded-2xl">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 6h-4v4h4v4h-4V13h-4v4H6v-4h4V9H6V5h4v4h4V5h4v4z" />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-bold">24시 우리 동물병원</h4>
+                    <p class="text-xs text-gray-400 mb-2">서울시 강남구 삼성동 456-78</p>
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded">24시간</span>
+                        <span class="text-gray-400">연중무휴</span>
+                        <span class="text-gray-400">• 2.5km</span>
+                    </div>
+                </div>
+                <a href="tel:02-234-5678"
+                    class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Hospital 3 -->
+        <div class="glass p-4 rounded-2xl">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 6h-4v4h4v4h-4V13h-4v4H6v-4h4V9H6V5h4v4h4V5h4v4z" />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="font-bold">사랑 동물의료센터</h4>
+                    <p class="text-xs text-gray-400 mb-2">서울시 서초구 반포동 789-12</p>
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="px-2 py-1 bg-purple-500/20 text-purple-400 rounded">전문병원</span>
+                        <span class="text-gray-400">10:00 - 19:00</span>
+                        <span class="text-gray-400">• 3.8km</span>
+                    </div>
+                </div>
+                <a href="tel:02-345-6789"
+                    class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Notice -->
+    <div class="mt-6 glass p-4 rounded-2xl border border-red-500/30 bg-red-500/10">
+        <div class="flex items-center gap-3">
+            <svg class="w-6 h-6 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                </path>
+            </svg>
+            <div>
+                <h4 class="font-bold text-red-400 text-sm">응급 상황 시</h4>
+                <p class="text-xs text-gray-400">24시간 동물병원에 즉시 연락하세요</p>
+            </div>
+        </div>
+    </div>
+</div>
