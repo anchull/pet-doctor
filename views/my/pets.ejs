@@ -1,0 +1,99 @@
+<div class="p-6 pt-8 pb-32">
+    <!-- Header -->
+    <div class="flex items-center gap-4 mb-8">
+        <a href="/my" class="p-2 bg-white/10 rounded-full">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </a>
+        <h1 class="text-xl font-bold">반려동물 관리</h1>
+    </div>
+
+    <!-- Pet List -->
+    <div class="space-y-4">
+        <% pets.forEach(pet=> { %>
+            <!-- Added overflow-visible to allow menu to show -->
+            <div
+                class="glass p-4 rounded-2xl flex items-center gap-4 relative overflow-visible transition-all duration-200">
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl font-bold">
+                    <%= pet.name[0] %>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-bold text-lg">
+                        <%= pet.name %>
+                    </h3>
+                    <p class="text-sm text-gray-400">
+                        <%= pet.breed %> • <%= pet.age %>살 • <%= pet.gender==='male' ? '남아' : '여아' %> • <%= pet.weight
+                                        %>kg
+                    </p>
+                </div>
+
+                <!-- Menu Button -->
+                <button onclick="toggleMenu('<%= pet.id %>')"
+                    class="p-2 text-gray-400 hover:text-white transition-colors relative z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                        </path>
+                    </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="menu-<%= pet.id %>"
+                    class="hidden absolute right-4 top-12 w-32 bg-[#2C2F3E] border border-white/10 rounded-xl shadow-xl z-50 overflow-hidden ring-1 ring-white/10">
+                    <a href="/pets/<%= pet.id %>/edit"
+                        class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-white/5 transition-colors">
+                        수정하기
+                    </a>
+                    <form action="/pets/<%= pet.id %>/delete" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                        <button type="submit"
+                            class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-white/5 transition-colors">
+                            삭제하기
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <% }) %>
+    </div>
+
+    <!-- Overlay for closing menus -->
+    <div id="menu-overlay" onclick="closeAllMenus()" class="hidden fixed inset-0 z-40"></div>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-24 right-6 pointer-events-none z-30">
+        <a href="/new"
+            class="pointer-events-auto flex items-center gap-2 bg-primary text-white font-bold px-6 py-4 rounded-full shadow-lg shadow-primary/40 hover:bg-blue-600 transition-transform active:scale-95">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            새 가족 등록
+        </a>
+    </div>
+
+    <script>
+        function toggleMenu(id) {
+            const menu = document.getElementById(`menu-${id}`);
+            const parent = menu.closest('.glass'); // Get parent card
+            const overlay = document.getElementById('menu-overlay');
+            const isHidden = menu.classList.contains('hidden');
+
+            // Close all first
+            closeAllMenus();
+
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                overlay.classList.remove('hidden');
+                parent.classList.add('z-50'); // Bring to front
+            }
+        }
+
+        function closeAllMenus() {
+            document.querySelectorAll('[id^="menu-"]').forEach(el => {
+                el.classList.add('hidden');
+                el.closest('.glass')?.classList.remove('z-50'); // Reset z-index
+            });
+            const overlay = document.getElementById('menu-overlay');
+            if (overlay) overlay.classList.add('hidden');
+        }
+    </script>
+</div>

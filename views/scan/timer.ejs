@@ -1,0 +1,31 @@
+<div class="h-screen bg-background text-white p-6 flex flex-col items-center justify-center text-center">
+    <div class="relative w-64 h-64 flex items-center justify-center mb-12">
+        <!-- Spinner Ring -->
+        <div class="absolute inset-0 border-4 border-white/10 rounded-full"></div>
+        <div class="absolute inset-0 border-4 border-primary rounded-full border-t-transparent animate-spin"></div>
+
+        <!-- Counter -->
+        <div class="text-8xl font-bold font-mono" id="countdown">3</div>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-4">잠시만 기다려주세요</h2>
+    <p class="text-gray-400">
+        검사지가 반응할 때까지<br>
+        3초간 대기합니다.
+    </p>
+</div>
+
+<script>
+    let count = 3;
+    const el = document.getElementById('countdown');
+
+    const timer = setInterval(() => {
+        count--;
+        if (count > 0) {
+            el.textContent = count;
+        } else {
+            clearInterval(timer);
+            window.location.href = '/scan/camera';
+        }
+    }, 1000);
+</script>

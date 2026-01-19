@@ -1,0 +1,104 @@
+<div class="p-6 pt-12 pb-32">
+    <h1 class="text-2xl font-bold mb-6">건강 기록</h1>
+
+    <!-- Graph Card -->
+    <div class="glass p-4 rounded-3xl mb-8">
+        <h3 class="text-sm font-bold text-gray-400 mb-4">최근 건강 변화</h3>
+        <div class="h-64">
+            <canvas id="healthChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Timeline -->
+    <h3 class="text-lg font-bold mb-4">검사 이력</h3>
+    <div class="space-y-4">
+        <!-- Mock Record Item 1 -->
+        <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
+            <div
+                class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-sm">
+                12.15
+            </div>
+            <div class="flex-1">
+                <h3 class="font-bold">정밀 소변 검사</h3>
+                <p class="text-xs text-gray-400">정상 • 10개 항목</p>
+            </div>
+            <div class="text-blue-400 font-bold text-lg">98점</div>
+        </div>
+
+        <!-- Mock Record Item 2 -->
+        <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
+            <div
+                class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 font-bold text-sm">
+                11.20
+            </div>
+            <div class="flex-1">
+                <h3 class="font-bold">병원 방문</h3>
+                <p class="text-xs text-gray-400">예방접종 (3차)</p>
+            </div>
+            <div class="text-gray-500 text-sm">완료</div>
+        </div>
+
+        <!-- Mock Record Item 3 -->
+        <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
+            <div
+                class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 font-bold text-sm">
+                10.05
+            </div>
+            <div class="flex-1">
+                <h3 class="font-bold">소변 검사</h3>
+                <p class="text-xs text-gray-400">주의 • 요비중 낮음</p>
+            </div>
+            <div class="text-red-400 font-bold text-lg">75점</div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/chart.js"></script>
+<script>
+    const ctx = document.getElementById('healthChart').getContext('2d');
+
+    // Gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(1, 117, 194, 0.5)');
+    gradient.addColorStop(1, 'rgba(1, 117, 194, 0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['10.05', '10.20', '11.05', '11.20', '12.01', '12.15'],
+            datasets: [{
+                label: '건강 점수',
+                data: [75, 82, 88, 90, 95, 98],
+                borderColor: '#0175C2',
+                backgroundColor: gradient,
+                borderWidth: 3,
+                tension: 0.4,
+                pointBackgroundColor: '#1a1c29',
+                pointBorderColor: '#0175C2',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 60,
+                    max: 100,
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+                }
+            }
+        }
+    });
+</script>
