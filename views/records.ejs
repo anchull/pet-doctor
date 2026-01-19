@@ -1,28 +1,15 @@
 <div class="p-6 pt-12 pb-32">
     <h1 class="text-2xl font-bold mb-2">건강 기록</h1>
-
-    <!-- Pet Filter -->
-    <% if (pets && pets.length> 0) { %>
-        <div class="flex overflow-x-auto hide-scrollbar -mx-6 px-6 pb-4 mb-4">
-            <% pets.forEach(pet=> {
-                const isSelected = selectedPet && pet.id === selectedPet.id;
-                %>
-                <a href="javascript:void(0)" onclick="selectPet(<%= pet.id %>)"
-                    class="pet-filter-btn flex-shrink-0 mr-2 px-4 py-2 rounded-full text-sm font-bold transition-colors <%= isSelected ? 'bg-primary text-white' : 'bg-white/10 text-gray-400' %>"
-                    data-pet-id="<%= pet.id %>">
-                    <%= pet.name %>
-                </a>
-                <% }) %>
-        </div>
+    <% if (selectedPet) { %>
+        <p class="text-gray-400 text-sm mb-6">
+            <%= selectedPet.name %>의 검사 기록
+        </p>
         <% } %>
 
             <!-- Graph Card -->
             <% if (typeof records !=='undefined' && records && records.length> 0) { %>
                 <div class="glass p-4 rounded-3xl mb-8">
-                    <h3 class="text-sm font-bold text-gray-400 mb-4">
-                        <% if (selectedPet) { %>
-                            <%= selectedPet.name %>의 <% } %>최근 건강 변화
-                    </h3>
+                    <h3 class="text-sm font-bold text-gray-400 mb-4">최근 건강 변화</h3>
                     <div class="h-64">
                         <canvas id="healthChart"></canvas>
                     </div>
@@ -62,7 +49,7 @@
                                         </div>
                                         <div class="flex-1">
                                             <h3 class="font-bold">
-                                                <%= record.petName || record.type %>
+                                                <%= record.type %>
                                             </h3>
                                             <p class="text-xs text-gray-400">
                                                 <%= record.summary %> • <%= record.results.length %>개 항목
@@ -147,25 +134,5 @@
                 }
             });
         })();
-
-        function selectPet(petId) {
-            fetch('/pets/select/' + petId, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            }).then(() => {
-                window.location.reload();
-            });
-        }
     </script>
-    <% } else { %>
-        <script>
-            function selectPet(petId) {
-                fetch('/pets/select/' + petId, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                }).then(() => {
-                    window.location.reload();
-                });
-            }
-        </script>
-        <% } %>
+    <% } %>
