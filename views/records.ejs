@@ -77,7 +77,7 @@
 
             // Prepare Data
             // Corrected syntax: <%- ... %> (No space between <% and -)
-            const rawRecords = <% - JSON.stringify(records) %>;
+            const rawRecords = <%- JSON.stringify(records) %>;
             const sortedRecords = rawRecords.slice().reverse();
 
             const labels = sortedRecords.map(r => r.date);
