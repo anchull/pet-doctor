@@ -1,137 +1,260 @@
-<div class="p-6 pt-12 pb-32">
+<div class="flex flex-col h-screen">
     <!-- Header -->
-    <div class="flex items-center gap-4 mb-6">
-        <a href="/vet" class="p-2 bg-white/10 rounded-full">
+    <div class="p-6 pb-4 flex items-center gap-4">
+        <a href="/vet" class="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
         </a>
-        <h1 class="text-xl font-bold">주변 병원 찾기</h1>
+        <div class="flex-1">
+            <h1 class="text-xl font-bold">주변 병원 찾기</h1>
+            <p class="text-xs text-gray-400" id="statusText">위치를 확인하는 중...</p>
+        </div>
     </div>
 
-    <!-- Map Placeholder -->
-    <div class="glass rounded-3xl overflow-hidden mb-6">
-        <div class="h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 flex items-center justify-center">
+    <!-- Map Container -->
+    <div id="map" class="flex-1 relative">
+        <div id="loading" class="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
             <div class="text-center">
-                <svg class="w-12 h-12 text-green-400 mx-auto mb-2" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <div
+                    class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4">
+                </div>
+                <p class="text-sm text-gray-300">주변 병원을 찾는 중...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hospital List Bottom Sheet -->
+    <div id="hospitalSheet" class="glass p-6 pb-32 rounded-t-3xl max-h-[50vh] overflow-y-auto hide-scrollbar">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-6 14H5v-5h8v5zm6 0h-4v-5h4v5zm0-7H5V5h14v5z" />
                 </svg>
-                <p class="text-sm text-gray-400">현재 위치 기반 검색</p>
-                <button id="locationBtn"
-                    class="mt-3 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm font-bold hover:bg-green-500/30 transition-colors">
-                    위치 허용하기
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hospital List -->
-    <h3 class="text-lg font-bold mb-4">추천 동물병원</h3>
-    <div class="space-y-4">
-        <!-- Hospital 1 -->
-        <div class="glass p-4 rounded-2xl">
-            <div class="flex items-start gap-4">
-                <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 6h-4v4h4v4h-4V13h-4v4H6v-4h4V9H6V5h4v4h4V5h4v4z" />
-                    </svg>
-                </div>
-                <div class="flex-1">
-                    <h4 class="font-bold">행복한 동물병원</h4>
-                    <p class="text-xs text-gray-400 mb-2">서울시 강남구 역삼동 123-45</p>
-                    <div class="flex items-center gap-2 text-xs">
-                        <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded">영업중</span>
-                        <span class="text-gray-400">09:00 - 21:00</span>
-                        <span class="text-gray-400">• 1.2km</span>
-                    </div>
-                </div>
-                <a href="tel:02-123-4567"
-                    class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                        </path>
-                    </svg>
-                </a>
-            </div>
+                동물병원 <span id="hospitalCount" class="text-primary">0</span>곳
+            </h2>
         </div>
 
-        <!-- Hospital 2 -->
-        <div class="glass p-4 rounded-2xl">
-            <div class="flex items-start gap-4">
-                <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 6h-4v4h4v4h-4V13h-4v4H6v-4h4V9H6V5h4v4h4V5h4v4z" />
-                    </svg>
-                </div>
-                <div class="flex-1">
-                    <h4 class="font-bold">24시 우리 동물병원</h4>
-                    <p class="text-xs text-gray-400 mb-2">서울시 강남구 삼성동 456-78</p>
-                    <div class="flex items-center gap-2 text-xs">
-                        <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded">24시간</span>
-                        <span class="text-gray-400">연중무휴</span>
-                        <span class="text-gray-400">• 2.5km</span>
-                    </div>
-                </div>
-                <a href="tel:02-234-5678"
-                    class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                        </path>
-                    </svg>
-                </a>
-            </div>
+        <div id="hospitalList" class="space-y-3">
+            <!-- Hospitals will be inserted here -->
         </div>
 
-        <!-- Hospital 3 -->
-        <div class="glass p-4 rounded-2xl">
-            <div class="flex items-start gap-4">
-                <div class="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 6h-4v4h4v4h-4V13h-4v4H6v-4h4V9H6V5h4v4h4V5h4v4z" />
-                    </svg>
-                </div>
-                <div class="flex-1">
-                    <h4 class="font-bold">사랑 동물의료센터</h4>
-                    <p class="text-xs text-gray-400 mb-2">서울시 서초구 반포동 789-12</p>
-                    <div class="flex items-center gap-2 text-xs">
-                        <span class="px-2 py-1 bg-purple-500/20 text-purple-400 rounded">전문병원</span>
-                        <span class="text-gray-400">10:00 - 19:00</span>
-                        <span class="text-gray-400">• 3.8km</span>
-                    </div>
-                </div>
-                <a href="tel:02-345-6789"
-                    class="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z">
-                        </path>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Emergency Notice -->
-    <div class="mt-6 glass p-4 rounded-2xl border border-red-500/30 bg-red-500/10">
-        <div class="flex items-center gap-3">
-            <svg class="w-6 h-6 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div id="noResults" class="hidden text-center py-8">
+            <svg class="w-16 h-16 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-                </path>
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <div>
-                <h4 class="font-bold text-red-400 text-sm">응급 상황 시</h4>
-                <p class="text-xs text-gray-400">24시간 동물병원에 즉시 연락하세요</p>
-            </div>
+            <p class="text-gray-400">주변 5km 이내에 동물병원이 없습니다</p>
+            <p class="text-xs text-gray-500 mt-2">다른 위치를 검색해보세요</p>
         </div>
     </div>
 </div>
+
+<script type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d9fc8a2f15e7df4452c092b4786bfddc&libraries=services"></script>
+<script>
+    let map;
+    let markers = [];
+    let userLocation = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        getUserLocation();
+    });
+
+    function getUserLocation() {
+        if (!navigator.geolocation) {
+            showError('위치 서비스를 지원하지 않는 브라우저입니다.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                initMap();
+                searchNearbyHospitals();
+            },
+            (error) => {
+                console.error('Geolocation error:', error);
+                // Default to Seoul City Hall if location denied
+                userLocation = { lat: 37.5665, lng: 126.9780 };
+                showError('위치 권한이 필요합니다. 서울시청 기준으로 검색합니다.');
+                initMap();
+                searchNearbyHospitals();
+            }
+        );
+    }
+
+    function initMap() {
+        const container = document.getElementById('map');
+        const options = {
+            center: new kakao.maps.LatLng(userLocation.lat, userLocation.lng),
+            level: 5 // Zoom level (5km radius view)
+        };
+
+        map = new kakao.maps.Map(container, options);
+
+        // Add user location marker
+        const userMarker = new kakao.maps.Marker({
+            map: map,
+            position: new kakao.maps.LatLng(userLocation.lat, userLocation.lng),
+            image: new kakao.maps.MarkerImage(
+                'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTIiIGZpbGw9IiMwMTc1QzIiIGZpbGwtb3BhY2l0eT0iMC4zIi8+CjxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjYiIGZpbGw9IiMwMTc1QzIiLz4KPC9zdmc+',
+                new kakao.maps.Size(32, 32),
+                { offset: new kakao.maps.Point(16, 16) }
+            )
+        });
+
+        // Add circle to show 5km radius
+        const circle = new kakao.maps.Circle({
+            center: new kakao.maps.LatLng(userLocation.lat, userLocation.lng),
+            radius: 5000, // 5km in meters
+            strokeWeight: 2,
+            strokeColor: '#0175C2',
+            strokeOpacity: 0.5,
+            strokeStyle: 'dashed',
+            fillColor: '#0175C2',
+            fillOpacity: 0.1
+        });
+        circle.setMap(map);
+
+        updateStatus('지도를 불러왔습니다');
+    }
+
+    function searchNearbyHospitals() {
+        const places = new kakao.maps.services.Places();
+
+        // Search for animal hospitals (category code: AT4)
+        places.categorySearch('AT4', (result, status) => {
+            document.getElementById('loading').style.display = 'none';
+
+            if (status === kakao.maps.services.Status.OK) {
+                displayHospitals(result);
+                updateStatus(`${result.length}개 병원 검색 완료`);
+            } else {
+                showNoResults();
+                updateStatus('주변에 병원이 없습니다');
+            }
+        }, {
+            location: new kakao.maps.LatLng(userLocation.lat, userLocation.lng),
+            radius: 5000, // 5km
+            sort: kakao.maps.services.SortBy.DISTANCE
+        });
+    }
+
+    function displayHospitals(hospitals) {
+        const listEl = document.getElementById('hospitalList');
+        const countEl = document.getElementById('hospitalCount');
+
+        if (hospitals.length === 0) {
+            showNoResults();
+            return;
+        }
+
+        listEl.innerHTML = '';
+        countEl.textContent = hospitals.length;
+
+        hospitals.forEach((hospital, index) => {
+            // Add marker to map
+            addHospitalMarker(hospital, index);
+
+            // Add to list
+            const card = createHospitalCard(hospital);
+            listEl.appendChild(card);
+        });
+    }
+
+    function addHospitalMarker(hospital, index) {
+        const position = new kakao.maps.LatLng(hospital.y, hospital.x);
+
+        const marker = new kakao.maps.Marker({
+            map: map,
+            position: position,
+            title: hospital.place_name
+        });
+
+        // Click marker to show info
+        kakao.maps.event.addListener(marker, 'click', () => {
+            map.setCenter(position);
+            map.setLevel(3); // Zoom in
+
+            // Scroll to card
+            const card = document.getElementById(`hospital-${index}`);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                card.classList.add('ring-2', 'ring-primary');
+                setTimeout(() => card.classList.remove('ring-2', 'ring-primary'), 2000);
+            }
+        });
+
+        markers.push(marker);
+    }
+
+    function createHospitalCard(hospital) {
+        const card = document.createElement('div');
+        card.id = `hospital-${markers.length - 1}`;
+        card.className = 'glass p-4 rounded-xl hover:bg-white/5 transition-all';
+
+        const distance = hospital.distance ? `${(hospital.distance / 1000).toFixed(1)}km` : '-';
+        const phone = hospital.phone || '전화번호 없음';
+        const address = hospital.road_address_name || hospital.address_name;
+
+        card.innerHTML = `
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-6 14H5v-5h8v5zm6 0h-4v-5h4v5zm0-7H5V5h14v5z"/>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="font-bold text-white mb-1">${hospital.place_name}</h3>
+                    <p class="text-xs text-gray-400 mb-1">
+                        📍 ${distance} · ${address}
+                    </p>
+                    ${phone !== '전화번호 없음' ? `<p class="text-xs text-gray-400">📞 ${phone}</p>` : ''}
+                </div>
+            </div>
+            <div class="flex gap-2 mt-3">
+                ${phone !== '전화번호 없음' ? `
+                    <a href="tel:${phone}" 
+                       class="flex-1 bg-primary/20 text-primary py-2 px-3 rounded-lg text-sm font-medium text-center hover:bg-primary/30 transition-colors">
+                        📞 전화하기
+                    </a>
+                ` : ''}
+                <a href="https://map.kakao.com/link/to/${hospital.place_name},${hospital.y},${hospital.x}" 
+                   target="_blank"
+                   class="flex-1 bg-white/10 text-white py-2 px-3 rounded-lg text-sm font-medium text-center hover:bg-white/20 transition-colors">
+                    🚗 길찾기
+                </a>
+            </div>
+        `;
+
+        return card;
+    }
+
+    function showNoResults() {
+        document.getElementById('hospitalList').innerHTML = '';
+        document.getElementById('noResults').classList.remove('hidden');
+        document.getElementById('hospitalCount').textContent = '0';
+    }
+
+    function updateStatus(text) {
+        document.getElementById('statusText').textContent = text;
+    }
+
+    function showError(message) {
+        updateStatus(message);
+        console.error(message);
+    }
+</script>
+
+<style>
+    #map {
+        width: 100%;
+        min-height: 300px;
+    }
+</style>
