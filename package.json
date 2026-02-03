@@ -12,8 +12,10 @@
   "dependencies": {
     "@hotwired/turbo": "^8.0.21",
     "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
-    "express-ejs-layouts": "^2.5.1"
+    "express-ejs-layouts": "^2.5.1",
+    "openai": "^6.17.0"
   }
 }

@@ -4,6 +4,13 @@ const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
+const OpenAI = require('openai');
+
+// Initialize OpenAI
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+});
 
 // Middleware
 app.use(expressLayouts);
@@ -13,6 +20,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // For API requests
 
 // Data Persistence (Multi-User)
 const DATA_FILE = path.join(__dirname, 'data', 'db.json');
@@ -251,6 +259,109 @@ app.get('/vet/hospitals', (req, res) => {
 
 app.get('/vet/faq', (req, res) => {
     res.render('vet/faq');
+});
+
+// AI Chat API Endpoint
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { message, petInfo } = req.body;
+
+        if (!message) {
+            return res.status(400).json({ error: '메시지를 입력해주세요.' });
+        }
+
+        // Rate limiting: 20 questions per day per user
+        const userId = req.userId;
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+        // Initialize chatUsage in db if not exists
+        if (!db[userId].chatUsage) {
+            db[userId].chatUsage = { date: today, count: 0 };
+        }
+
+        // Reset count if it's a new day
+        if (db[userId].chatUsage.date !== today) {
+            db[userId].chatUsage = { date: today, count: 0 };
+        }
+
+        // Check if user exceeded daily limit
+        if (db[userId].chatUsage.count >= 20) {
+            return res.status(429).json({
+                error: '오늘의 질문 횟수를 모두 사용하셨습니다. (20/20)\n내일 다시 이용해주세요. 🙏',
+                remaining: 0,
+                limit: 20
+            });
+        }
+
+        // Get user's recent test results for context
+        const selectedPet = getSelectedPet(req);
+        const recentRecords = getRecordsByPet(req, selectedPet?.id).slice(0, 3);
+
+        // Build context from test results
+        let contextInfo = '';
+        if (selectedPet) {
+            contextInfo += `반려동물 정보: ${selectedPet.name} (${selectedPet.breed}, ${selectedPet.age}세)\n`;
+        }
+        if (recentRecords.length > 0) {
+            contextInfo += '\n최근 검사 기록:\n';
+            recentRecords.forEach(record => {
+                contextInfo += `- ${record.date}: ${record.summary} (점수: ${record.score}/100)\n`;
+                // Add abnormal results
+                const abnormalResults = record.results.filter(r => r.status === 'Abnormal');
+                if (abnormalResults.length > 0) {
+                    contextInfo += `  이상 수치: ${abnormalResults.map(r => r.name).join(', ')}\n`;
+                }
+            });
+        }
+
+        const systemPrompt = `당신은 친절하고 전문적인 AI 수의사 도우미입니다. 다음 규칙을 따라주세요:
+
+1. 반려동물 건강에 대해 명확하고 이해하기 쉽게 설명하세요
+2. 소변 검사 결과 해석, 증상 설명, 일반적인 건강 정보를 제공하세요
+3. 답변은 200자 이내로 간결하게 작성하세요
+4. 이모지를 적절히 사용하여 친근감을 주세요 (🐾 💡 ⚠️ 등)
+5. 심각한 증상이나 지속적인 이상 수치는 반드시 동물병원 방문을 권장하세요
+6. "저는 AI이므로 정확한 진단은 수의사와 상담이 필요합니다" 같은 면책 문구를 자연스럽게 포함하세요
+7. 의학적 진단이나 처방은 절대 하지 마세요
+
+${contextInfo ? `현재 반려동물 정보:\n${contextInfo}` : ''}`;
+
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: message }
+            ],
+            temperature: 0.7,
+            max_tokens: 500
+        });
+
+        const reply = completion.choices[0].message.content;
+
+        // Increment usage count and save
+        db[userId].chatUsage.count++;
+        saveDb();
+
+        res.json({
+            reply,
+            usage: completion.usage, // For monitoring
+            remaining: 20 - db[userId].chatUsage.count,
+            limit: 20
+        });
+
+    } catch (error) {
+        console.error('OpenAI API Error:', error);
+
+        if (error.code === 'insufficient_quota') {
+            return res.status(503).json({
+                error: 'API 사용량을 초과했습니다. 잠시 후 다시 시도해주세요.'
+            });
+        }
+
+        res.status(500).json({
+            error: '일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+        });
+    }
 });
 
 app.get('/my', (req, res) => {
