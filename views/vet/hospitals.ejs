@@ -200,8 +200,7 @@
 
         // Click marker to show info
         kakao.maps.event.addListener(marker, 'click', () => {
-            map.setCenter(position);
-            map.setLevel(3); // Zoom in
+            map.panTo(position); // Smooth pan without changing zoom level
 
             // Scroll to card
             const card = document.getElementById(`hospital-${index}`);
