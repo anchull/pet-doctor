@@ -1,4 +1,4 @@
-<div class="flex flex-col h-screen">
+<div class="flex flex-col h-screen" data-turbo="false">
     <!-- Header -->
     <div class="p-6 pb-4 flex items-center gap-4">
         <a href="/vet" class="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
@@ -51,17 +51,49 @@
     </div>
 </div>
 
-<script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d9fc8a2f15e7df4452c092b4786bfddc&libraries=services"></script>
 <script>
     let map;
     let markers = [];
     let userLocation = null;
+    let kakaoLoaded = false;
+
+    // Dynamically load Kakao Maps SDK
+    function loadKakaoSDK() {
+        return new Promise((resolve, reject) => {
+            if (typeof kakao !== 'undefined' && kakao.maps) {
+                resolve();
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=<%= kakaoApiKey %>&libraries=services&autoload=false';
+            script.async = true;
+            script.onload = () => {
+                kakao.maps.load(() => {
+                    kakaoLoaded = true;
+                    resolve();
+                });
+            };
+            script.onerror = () => {
+                reject(new Error('Kakao Maps SDK 로딩 실패'));
+            };
+            document.head.appendChild(script);
+        });
+    }
 
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-        getUserLocation();
-    });
+    async function init() {
+        try {
+            await loadKakaoSDK();
+            getUserLocation();
+        } catch (error) {
+            showError('지도를 불러올 수 없습니다: ' + error.message);
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    // Start initialization
+    init();
 
     function getUserLocation() {
         if (!navigator.geolocation) {

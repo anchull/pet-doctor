@@ -254,7 +254,9 @@ app.get('/vet/chat', (req, res) => {
 });
 
 app.get('/vet/hospitals', (req, res) => {
-    res.render('vet/hospitals');
+    res.render('vet/hospitals', { 
+        kakaoApiKey: process.env.KAKAO_MAPS_API_KEY || 'd9fc8a2f15e7df4452c092b4786bfddc'
+    });
 });
 
 app.get('/vet/faq', (req, res) => {
