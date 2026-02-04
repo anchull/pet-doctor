@@ -285,22 +285,32 @@
 </script>
 
 <style>
+    /* Map container - optimized for smooth touch */
     #map {
         width: 100%;
-        /* GPU acceleration for smoother touch interactions */
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        will-change: transform;
+        /* Hardware acceleration without will-change overhead */
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        /* Prevent text selection during drag */
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    /* Allow natural pinch-zoom on map */
+    #map,
+    #map * {
+        touch-action: manipulation;
     }
 
     /* Optimize touch scrolling for hospital list */
     #hospitalSheet {
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
+        scroll-behavior: smooth;
     }
 
-    /* Prevent body scroll when interacting with map */
-    #map * {
-        touch-action: pan-x pan-y;
+    /* Disable pull-to-refresh on the page */
+    body {
+        overscroll-behavior-y: contain;
     }
 </style>
