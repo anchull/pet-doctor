@@ -285,28 +285,19 @@
 </script>
 
 <style>
-    /* Map container - optimized for smooth touch */
+    /* Map container */
     #map {
         width: 100%;
-        /* Hardware acceleration without will-change overhead */
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
         /* Prevent text selection during drag */
         -webkit-user-select: none;
         user-select: none;
-    }
-
-    /* Allow natural pinch-zoom on map */
-    #map,
-    #map * {
-        touch-action: manipulation;
+        /* Let Kakao Maps handle all touch events natively */
     }
 
     /* Optimize touch scrolling for hospital list */
     #hospitalSheet {
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
-        scroll-behavior: smooth;
     }
 
     /* Disable pull-to-refresh on the page */
