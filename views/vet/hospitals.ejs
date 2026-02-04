@@ -125,34 +125,23 @@
         const container = document.getElementById('map');
         const options = {
             center: new kakao.maps.LatLng(userLocation.lat, userLocation.lng),
-            level: 5 // Zoom level (5km radius view)
+            level: 4, // Slightly more zoomed in for better performance
+            disableDoubleClick: false,
+            disableDoubleClickZoom: false
         };
 
         map = new kakao.maps.Map(container, options);
 
-        // Add user location marker
+        // Add user location marker (simple circle)
         const userMarker = new kakao.maps.Marker({
             map: map,
             position: new kakao.maps.LatLng(userLocation.lat, userLocation.lng),
             image: new kakao.maps.MarkerImage(
-                'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTIiIGZpbGw9IiMwMTc1QzIiIGZpbGwtb3BhY2l0eT0iMC4zIi8+CjxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjYiIGZpbGw9IiMwMTc1QzIiLz4KPC9zdmc+',
-                new kakao.maps.Size(32, 32),
-                { offset: new kakao.maps.Point(16, 16) }
+                'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iOCIgZmlsbD0iIzAxNzVDMiIgZmlsbC1vcGFjaXR5PSIwLjMiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iNCIgZmlsbD0iIzAxNzVDMiIvPgo8L3N2Zz4=',
+                new kakao.maps.Size(24, 24),
+                { offset: new kakao.maps.Point(12, 12) }
             )
         });
-
-        // Add circle to show 5km radius
-        const circle = new kakao.maps.Circle({
-            center: new kakao.maps.LatLng(userLocation.lat, userLocation.lng),
-            radius: 5000, // 5km in meters
-            strokeWeight: 2,
-            strokeColor: '#0175C2',
-            strokeOpacity: 0.5,
-            strokeStyle: 'dashed',
-            fillColor: '#0175C2',
-            fillOpacity: 0.1
-        });
-        circle.setMap(map);
 
         updateStatus('지도를 불러왔습니다');
     }
