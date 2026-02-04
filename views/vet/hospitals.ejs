@@ -12,20 +12,20 @@
         </div>
     </div>
 
-    <!-- Map Container -->
-    <div id="map" class="flex-1 relative">
+    <!-- Map Container - Fixed height for better list visibility -->
+    <div id="map" class="relative" style="height: 35vh; min-height: 200px;">
         <div id="loading" class="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
             <div class="text-center">
                 <div
-                    class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4">
+                    class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3">
                 </div>
                 <p class="text-sm text-gray-300">주변 병원을 찾는 중...</p>
             </div>
         </div>
     </div>
 
-    <!-- Hospital List Bottom Sheet -->
-    <div id="hospitalSheet" class="glass p-6 pb-32 rounded-t-3xl max-h-[50vh] overflow-y-auto hide-scrollbar">
+    <!-- Hospital List Bottom Sheet - Expandable -->
+    <div id="hospitalSheet" class="glass p-4 pb-32 rounded-t-3xl flex-1 overflow-y-auto hide-scrollbar">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold flex items-center gap-2">
                 <svg class="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 24 24">
@@ -287,6 +287,20 @@
 <style>
     #map {
         width: 100%;
-        min-height: 300px;
+        /* GPU acceleration for smoother touch interactions */
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+        will-change: transform;
+    }
+
+    /* Optimize touch scrolling for hospital list */
+    #hospitalSheet {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+
+    /* Prevent body scroll when interacting with map */
+    #map * {
+        touch-action: pan-x pan-y;
     }
 </style>
